@@ -3,7 +3,7 @@ import numpy as np
 import configparser
 config = configparser.ConfigParser()
 config.read('conf_autophot.ini')
-
+detect_thresh = str(config['DEFAULT']['detect_thresh'])
 
 def read_file(file):
 # SExtractor catalog columns
@@ -128,7 +128,7 @@ def findstars(fits_file):
 		quit()
 	avgfwhm = np.median(FWHMtemp)
 
-	command2 = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", "run2.param", "-SEEING_FWHM", str(avgfwhm)]
+	command2 = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", "run2.param", "-SEEING_FWHM", str(avgfwhm), "-DETECT_THRESH", detect_thresh]
 	runsex(command2)
 
 	data2 = read_file(cat2)
