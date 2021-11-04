@@ -338,8 +338,8 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 	dmag_mean3, dmag_median3, dmag_StdDev3 = sigma_clipped_stats(dmag, sigma=5, maxiters=None)
 	
 	mag1_corr = mag1 + abs(dmag_mean3)
-	print('mean difference: ', dmag_mean3)
-	print('standard deviation: ', dmag_StdDev3)
+	#print('mean difference: ', dmag_mean3)
+	#print('standard deviation: ', dmag_StdDev3)
 
 	# getting fits data 
 	hdu = fits.open(fits_file)[0]
