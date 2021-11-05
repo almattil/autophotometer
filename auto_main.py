@@ -458,7 +458,7 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 
 	obs_array = np.insert(obs_array, 9, ph_mags, axis=1)
 	obs_array = np.insert(obs_array, 10, ownmags - dmag_mean3, axis=1)    #Vitaly
-	obs_array = np.insert(obs_array, 11, ph_mags + ph_dmag_mean3, axis=1)    #Vitaly
+	obs_array = np.insert(obs_array, 11, np.array(ph_mags) + ph_dmag_mean3, axis=1)    #Vitaly
 
 
 	outfile = open('All_Mags.dat', "w")      #Vitaly
