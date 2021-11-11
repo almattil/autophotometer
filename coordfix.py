@@ -1,17 +1,40 @@
 from astropy.io import fits
 import subprocess
 import ccdproc
+import os # Vitaly 20211108
 
 
 def runscamp2mass():
-	subprocess.call(['scamp', 'phase1.cat', '-ASTREF_CATALOG', '2MASS'])
+#Vitaly 20211108
+	ph1cat_file='phase1.cat'
+	if not os.path.exists(ph1cat_file):
+		ph1cat_file=os.path.expanduser('~/.autophot/phase1.cat')
+#Vitaly 20211108
+	subprocess.call(['scamp', ph1cat_file, '-ASTREF_CATALOG', '2MASS'])
 
 
 def runscamp():
-	subprocess.call(['scamp', 'phase1.cat'])
+#Vitaly 20211108
+	ph1cat_file='phase1.cat'
+	scampconf_file='scamp.conf'
+	if not os.path.exists(ph1cat_file):
+		ph1cat_file=os.path.expanduser('~/.autophot/phase1.cat')
+	if not os.path.exists(scampconf_file):
+		scampconf_file=os.path.expanduser('~/.autophot/scamp.conf')
+#Vitaly 20211108
+	subprocess.call(['scamp', "-c", scampconf_file, ph1cat_file])
 
 def runsex(fits_file):
-	subprocess.call(['sex', fits_file])
+# Vitaly 20211108
+	run1_file="run1.param"
+	sexdef_file='default.sex'
+	if not os.path.exists(sexdef_file):
+		sexdef_file=os.path.expanduser('~/.autophot/default.sex')
+	if not os.path.exists(run1_file):
+		run1_file=os.path.expanduser('~/.autophot/run1.param')		
+	subprocess.call(['sex', "-c", sexdef_file, fits_file, "-PARAMETERS_NAME", run1_file])
+# Vitaly 20211108
+
 	
 def read_header(filename): #function that reads .head files created by SCAMP
 	headerlines = []

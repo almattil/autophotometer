@@ -1,9 +1,22 @@
 import subprocess
 import numpy as np
 import configparser
+import os # new
 config = configparser.ConfigParser()
-config.read('conf_autophot.ini')
+
+#from pkg_resources import resource_string
+#foo_config = resource_string(__name__, 'conf_autophot.ini')
+#print('foo_config=',foo_config)
+
+config.read(['conf_autophot.ini', os.path.expanduser('~/.autophot/conf_autophot.ini')],)
+#config.read('conf_autophot.ini')  #old
+#print('config=',config)
+
+#foo_detect_thresh = str(foo_config['DEFAULT']['detect_thresh'])
+#print('foo_detect_thresh=',foo_detect_thresh)
+
 detect_thresh = str(config['DEFAULT']['detect_thresh'])
+#print('detect_thresh=',detect_thresh)
 
 def read_file(file):
 # SExtractor catalog columns
@@ -99,8 +112,18 @@ def findstars(fits_file):
 	filename = fits_file.split('.')
 	name = filename[0]	
 	cat2 = "cat_{}.cat".format(name)
+	
+# Vitaly 20211108
+	ph2conf_file="ph2conf.sex"
+	run2_file="run2.param"
+	if not os.path.exists(ph2conf_file):
+		ph2conf_file=os.path.expanduser('~/.autophot/ph2conf.sex')
+	if not os.path.exists(run2_file):
+		run2_file=os.path.expanduser('~/.autophot/run2.param')
+# Vitaly 20211108
+	
 	# command = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2]
-	command = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", "run2.param"]
+	command = ["sex", fits_file, "-c", ph2conf_file, "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", run2_file]  # Vitaly 20211108
 	runsex(command)
 
 	data = read_file(cat2)
@@ -113,6 +136,7 @@ def findstars(fits_file):
 
 	sg_thresh = float(config['DEFAULT']['sg_threshold'])
 	MagErrLimit = float(config['DEFAULT']['magerr_threshold'])
+	print('sg_thresh=',sg_thresh,'MagErrLimit=',MagErrLimit)
 
 	fwhm1 = e_fwhm(data)
 	sg1   = e_sg(data)
@@ -128,7 +152,7 @@ def findstars(fits_file):
 		quit()
 	avgfwhm = np.median(FWHMtemp)
 
-	command2 = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", "run2.param", "-SEEING_FWHM", str(avgfwhm), "-DETECT_THRESH", detect_thresh]
+	command2 = ["sex", fits_file, "-c", ph2conf_file, "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", run2_file, "-SEEING_FWHM", str(avgfwhm), "-DETECT_THRESH", detect_thresh]       # Vitaly 20211108
 	runsex(command2)
 
 	data2 = read_file(cat2)
