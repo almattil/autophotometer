@@ -66,24 +66,24 @@ def onpick(event, filt1, filt2):
 	
 	try:
 		print('{:>5} {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}     {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][4], abs(obs_array1[ind][8]), obs_array1[ind][6], obs_array1[ind][10], 
+			ind, obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
 			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11],
-			obs_array2[ind][4], abs(obs_array2[ind][8]), obs_array2[ind][6], obs_array2[ind][10], 
+			obs_array2[ind][4], abs(obs_array2[ind][5]), obs_array2[ind][6], obs_array2[ind][10], 
 			abs(obs_array2[ind][8]), obs_array2[ind][7],obs_array2[ind][11], det_types1[ind])
 			)
-		log_selected.append('{:>5} {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}     {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][4], abs(obs_array1[ind][8]), obs_array1[ind][6], obs_array1[ind][10], 
+		log_selected.append('{:>5} {:8.3f}{:8.3f}{:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}     {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
+			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
 			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11],
-			obs_array2[ind][4], abs(obs_array2[ind][8]), obs_array2[ind][6], obs_array2[ind][10], 
+			obs_array2[ind][4], abs(obs_array2[ind][5]), obs_array2[ind][6], obs_array2[ind][10], 
 			abs(obs_array2[ind][8]), obs_array2[ind][7],obs_array2[ind][11], det_types1[ind])
 			)
 	except:
-		print('{:>5} {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][4], abs(obs_array1[ind][8]), obs_array1[ind][6], obs_array1[ind][10], 
+		print('{:>5} {:8.3f} {:8.3f} {:8.3f} {:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
+			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
 			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11], det_types1[ind])
 			)
-		log_selected.append('{:>5} {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][4], abs(obs_array1[ind][8]), obs_array1[ind][6], obs_array1[ind][10], 
+		log_selected.append('{:>5} {:8.3f}{:8.3f}{:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
+			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
 			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11], det_types1[ind])
 			)
 
@@ -144,6 +144,16 @@ def determine_filter(hdr):
 			filt_in = hdr['NCFLTNM2']
 		else:
 			print('Filter in ', hdr['INSTRUME'], ' not found')
+	
+	elif hdr['INSTRUME'] == 'StanCam':
+		filt_raw = hdr['STFLTNM'].strip()
+		filt_in = filt_raw[0:5]
+			# filt_in = hdr['NCFLTNM1']
+		# elif hdr['STFLTNM'].strip() != 'Open':
+			# filt_in = hdr['NCFLTNM2']
+		# else:
+			# print('Filter in ', hdr['INSTRUME'], ' not found')
+	
 	else:
 		print(hdr['INSTRUME'], 'instrument not found')
 	
@@ -157,7 +167,7 @@ def determine_filter(hdr):
 		'B_Bes'		:	'B',
 		'V_Bes'		:	'V',
 		'R_Bes'		:	'R',
-		#'i2'		:	'I',
+		'i_int'		:	'I',
 		'J'			:	'J',
 		'H'			:	'H',
 		'Ks'		:	'K',
@@ -298,7 +308,7 @@ def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3)
 		plt.plot(X, y2, '--',color = 'b',label="Slope="+'%.3f' % slope1[0] + "   Intersection="+'%.3f' % slope1[1]) #Vitaly
 		plt.legend()
 		plt.title("Colour-term and Zero-point")
-		#plt.show()
+		plt.show()
 		plt.close('all')
 		#output = color_term[filt] * C + ext_coeff[filt] * airmass
 		#output = slope * C + ext_coeff[filt] * airmass
@@ -544,7 +554,7 @@ def MainProject(fits_file):
 # drawing fits image and markers
 	global ra_sat, dec_sat, ra_nonstar, dec_nonstar, ra_err, dec_err, ra_susp, dec_susp
 
-	plt.scatter(ra_all, dec_all, 10, marker='D', facecolors='none', edgecolors='y', transform=ax.get_transform('fk5'), label = "all")
+	#plt.scatter(ra_all, dec_all, 10, marker='D', facecolors='none', edgecolors='y', transform=ax.get_transform('fk5'), label = "all")
 	#plt.scatter(ss.ra_sat, ss.dec_sat, 100, marker='o', facecolors='none', edgecolors='g', transform=ax.get_transform('fk5'), label = "saturated")
 	#plt.scatter(ss.ra_nonstar, ss.dec_nonstar, marker='X', facecolors='none', edgecolors='r', transform=ax.get_transform('fk5'), label = "nonstar")
 	#plt.scatter(ss.ra_err, ss.dec_err, 100, marker='h', facecolors='none', edgecolors='c', transform=ax.get_transform('fk5'), label = "large error")
@@ -564,12 +574,13 @@ def MainProject(fits_file):
 	
 	fig.canvas.mpl_connect('pick_event', lambda event: onpick(event, filt, filt2)) #This calls the function that allows us to click a target and get information.
 	#plt.legend()
-	print('Index   DB_mag   DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?')
+	print('Index       RA      DEC   DB_mag    DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?')
 	plt.show()
 	plt.close('all')	
 	
-	outfile = open('Selected_Mags.dat', "w")
-	outfile.write('Index   DB_mag   DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?\n')
+	fitsname = fits_file.split('.')[0]
+	outfile = open('Selected_Mags_'+fitsname+'.dat', "w")
+	outfile.write('Index       RA     DEC  DB_mag   DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?\n')
 	for i in range(len(log_selected)):      #Vitaly
 		outfile.write(log_selected[i]+'\n')
 	outfile.close()      #Vitaly
