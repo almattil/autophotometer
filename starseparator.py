@@ -147,16 +147,16 @@ def findstars(fits_file):
 	flags = e_flags(data2)
 	fwhm_pix = e_fwhm_pix(data2)
 
-#	print("\n\n*******\nFWHM distribution\n")
+	print("\n\n*******\nFWHM distribution\n")
 
 	HistBins=int((max(FWHMtemp)-min(FWHMtemp))/0.1)
-#	print(plotille.hist(FWHMtemp))
+	print(plotille.hist(FWHMtemp))
 
-#	print("\n\n*******\nClipped FWHM distribution\n")
+	print("\n\n*******\nClipped FWHM distribution\n")
 
 	filtered_data = sigma_clip(FWHMtemp, sigma=3, maxiters=None, masked=False, copy=False, cenfunc='median')
 	HistBins=int((max(filtered_data)-min(filtered_data))/0.05)
-#	print(plotille.hist(filtered_data,bins=HistBins))
+	print(plotille.hist(filtered_data,bins=HistBins))
 
 # scipy.stats.tmean  https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.tmean.html#scipy.stats.tmean
 	Mean3, Median3, StdDev3 = sigma_clipped_stats(FWHMtemp, sigma=3, maxiters=None)
@@ -166,7 +166,7 @@ def findstars(fits_file):
 	print("\n")
 
 
-	# print("\n\n*******\nSorting the detections\n")
+	#print("\n\n*******\nSorting the detections\n")
 	FWHMtemp = []
 	for i in range(len(fwhm)):
 		if ((magerr[i] <= MagErrLimit) and (sg[i] > sg_thresh)) and not(4 in get_powers(flags[i])):
@@ -236,7 +236,7 @@ def findstars(fits_file):
 	
 	det_type = []
 	
-	for i in range(len(fiso)):
+	for i in range(len(mag)):
 		if (sg[i] < sg_thresh):       # Probably not a star
 			n_nonstars += 1
 			xx_nonstar.append(x[i])
@@ -277,8 +277,8 @@ def findstars(fits_file):
 			mag_susp.append(mag[i])
 			fwhm_susp.append(3600*fwhm[i])
 			det_type.append('Bad FWHM  ')
-			
-		else:															#else, it's probably a star.
+
+		elif ((magerr[i] <= MagErrLimit) and (sg[i] > sg_thresh)) and not(4 in get_powers(flags[i])):		#else, it's probably a star.
 			n_stars += 1
 			xx.append(x[i])
 			yy.append(y[i])
