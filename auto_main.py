@@ -28,42 +28,6 @@ sigma_mult = float(config['DEFAULT']['sigma_mult'])
 
 def onpick(event, filt1, filt2):
 	ind = event.ind[0]
-	# print('------------------------------')
-	# print('Index ', ind)
-	# print('RA DEC: ', obs_array1[ind][0], obs_array1[ind][1])
-	# print(det_types1[ind])
-	# # print('Number of detections:',len(obs_array1))    #Vitaly
-	# # print(obs_array1[:][10])                      #Vitaly
-
-
-	# if obs_array1[ind][2] == 1:
-		# print('Detection present in database Filter {}: YES'.format(filt1))
-		# print('Filter {} database mag: '.format(filt1), format(obs_array1[ind][4], '.6f'), '+/-', format(abs(obs_array1)[ind][5], '.6f'))
-	# else:
-		# print('Detection present in database Filter {}: NO'.format(filt1))
-	# print('Filter {} SExtractor mag: '.format(filt1), format(obs_array1[ind][6], '.6f'), '+/-', format(obs_array1[ind][8], '.6f'))
-	# print('          W/o colour-trm: ', format(obs_array1[ind][10], '.6f'))  #Vitaly
-	# print('Filter {} Photutils mag: '.format(filt1), format(obs_array1[ind][7], '.6f'), '+/-', format(obs_array1[ind][8], '.6f'))
-	# print('         W/o colour-trm: ', format(obs_array1[ind][11], '.6f'))  #Vitaly
-	# try:
-		# if obs_array2[ind][2] == 1:
-			# print('Detection present in database Filter {}: YES'.format(filt2))
-			# print('Filter {} database mag: '.format(filt2), format(obs_array2[ind][4], '.6f'), '+/-', format(abs(obs_array2)[ind][5], '.6f'))
-		# else:
-			# print('Detection present in database Filter {}: NO'.format(filt2))
-		# print('Filter {} SExtractor mag: '.format(filt2), format(obs_array2[ind][6], '.6f'), '+/-', format(obs_array2[ind][8], '.6f'))
-		# print('         W/o colour-term: ', format(obs_array2[ind][10], '.6f'))  # Vitaly
-		# print('Filter {} Photutils mag: '.format(filt2), format(obs_array2[ind][7], '.6f'), '+/-', format(obs_array2[ind][8], '.6f'))
-		# print('        W/o colour-term: ', format(obs_array2[ind][11], '.6f'))  #Vitaly
-	
-		# #print('RA DEC: ', obs_array2[ind][0], obs_array2[ind][1])
-		# #print('RA DEC differences: ', obs_array2[ind][0]-obs_array1[ind][0], obs_array2[ind][1]- obs_array1[ind][1])
-	# except:
-		# pass
-	# onlycolor_se = obs_array1[ind][10]-obs_array1[ind][6]
-	# onlycolor_ph = obs_array1[ind][11]-obs_array1[ind][7]
-	# print('%8.3f   %8.3f'  % (onlycolor_ph,onlycolor_se))
-	
 	try:
 		print('{:>5} {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}     {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
 			ind, obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
@@ -86,8 +50,6 @@ def onpick(event, filt1, filt2):
 			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
 			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11], det_types1[ind])
 			)
-
-
 	
 def writefiles(obs_array1,obs_array2,filt1,filt2):
 	
@@ -180,7 +142,6 @@ def determine_filter(hdr):
 	return(filt_out)	
 	
 def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3):  #Vitaly
-# def colorterm_airmass(hdr, airmass, ps_bvri):
 	'''
 	Filters:
 		PS1			G R I Z Y (_PS)
@@ -348,9 +309,7 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 	dmag_mean3, dmag_median3, dmag_StdDev3 = sigma_clipped_stats(dmag, sigma=5, maxiters=None)
 	
 	mag1_corr = mag1 + abs(dmag_mean3)
-	#print('mean difference: ', dmag_mean3)
-	#print('standard deviation: ', dmag_StdDev3)
-
+	
 	# getting fits data 
 	hdu = fits.open(fits_file)[0]
 	header = hdu.header
@@ -366,10 +325,8 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 		ap_pos.append(pos)
 
 	r_ap = np.mean(fwhm_pix)*1.4
-	#r_ap = np.mean(fwhm_pix)* 2
 	r_an_min = np.mean(fwhm_pix) * 3
 	r_an_max = np.mean(fwhm_pix) * 5
-	#print(r_ap, r_an_max, r_an_min)
 	
 	apertures = photutils.CircularAperture(ap_pos, r = r_ap)
 	annulus = photutils.CircularAnnulus(ap_pos, r_in = r_an_min, r_out = r_an_max)
@@ -381,35 +338,13 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 		mean_sigclip, median_sigclip, std_sigclip = sigma_clipped_stats(annulus_data_1d)
 		bkg_median.append(median_sigclip)
 	bkg_median = np.array(bkg_median)
-	
-###########################################################################
-# Photutils error estimation experiments! #################################
-
-	#gain = header['GAIN    ']
-	#masks_aper = apertures.to_mask(method='center')
-	#data_cutout = []
-	#for mask in masks_aper:
-#		data_cutout.append(mask.cutout(image))
-	#ph_error = calc_total_error(image, data_cutout, gain)
-	
-	# plt.imshow(data_cutout[20], interpolation='nearest')
-	# plt.colorbar()
-	# plt.show()
-	# plt.close('all')
-	# plt.imshow(masks[20].multiply(image), interpolation='nearest')
-	# plt.colorbar()
-	# plt.show()
-	# plt.close('all')
-###########################################################################
-	
+		
 	phot = photutils.aperture_photometry(image, apertures)
 	phot['annulus_median'] = bkg_median
 	phot['aper_bkg'] = bkg_median * apertures.area
 	phot['aper_sum_bkgsub'] = phot['aperture_sum'] - phot['aper_bkg']
 	for col in phot.colnames:
 		phot[col].info.format = '%.8g'  # for consistent table output
-	#print(phot)
-	#print(bkg_median)
 	ph_mags = []
 	ph_dmag = []
 	ph_magerrs = []
@@ -438,14 +373,9 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 	
 	ph_dmag_mean3, ph_dmag_median3, ph_dmag_sd3 = sigma_clipped_stats(ph_dmag_temp, sigma=5, maxiters=None)
 	airmass = float(header['AIRMASS'])	
-	# additionals = colorterm_airmass(header, airmass, ps_bvri) #Vitaly
 	color_corr = colorterm_airmass(header, airmass, ps_bvri, ownmags, dmag_mean3, dmag_StdDev3)
-	# for i in range(len(mag1)):  #Vitaly
-	# 	print(mag1_corr[i],airmass,'PS:',ps_bvri[i])
-	# exit(1)
-	# ph_truemags = ph_mags + abs(ph_dmag_mean3) + additionals    #Vitaly
+
 	ph_truemags = np.array(ph_mags) - color_corr
-	# truemags = ownmags + abs(dmag_mean3) + additionals    #Vitaly
 	truemags = ownmags - color_corr
 	
 	obs_array = np.insert(obs_array, 6, truemags, axis=1)
@@ -475,12 +405,7 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 	outfile.write('  PS_mag    SEx_mag   SEx_noCT     Ph_mag    Ph_noCT\n')
 	for i in range(len(ownmags)):      #Vitaly
 		outfile.write('%8.3f   %8.3f   %8.3f   %8.3f   %8.3f\n' % (obs_array[i][4],obs_array[i][6],obs_array[i][10],obs_array[i][7],obs_array[i][11]))
-		#print('%8.3f   %8.3f   %8.3f   %8.3f   %8.3f' % (obs_array[i][4],obs_array[i][6],obs_array[i][10],obs_array[i][7],obs_array[i][11]))
 	outfile.close()      #Vitaly
-
-	# for i in range(len(ownmags)):    #Vitaly
-	# 	print(obs_array[i][4],obs_array[i][6],obs_array[i][10],obs_array[i][7],obs_array[i][11])
-
 
 	if output_data == True:
 		return(obs_array,image, wcs)
@@ -527,7 +452,6 @@ def MainProject(fits_file):
 	
 	obs_array1,image,wcs = photometry_calculations(obs_array1, fits_file, xx, yy, fwhm_pix, magerr, ps_bvri, output_data = True)
 	
-	#print(wcs)
 	stretch = LinearStretch(slope=0.5, intercept=0.5)
 	norm = ImageNormalize(image, stretch=LinearStretch(), interval=ZScaleInterval())
 	
@@ -572,8 +496,8 @@ def MainProject(fits_file):
 	global log_selected
 	log_selected = []
 	
-	fig.canvas.mpl_connect('pick_event', lambda event: onpick(event, filt, filt2)) #This calls the function that allows us to click a target and get information.
-	#plt.legend()
+	# calling the function that allows us to click a target and get information.
+	fig.canvas.mpl_connect('pick_event', lambda event: onpick(event, filt, filt2))
 	print('Index       RA      DEC   DB_mag    DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?')
 	plt.show()
 	plt.close('all')	
@@ -581,9 +505,9 @@ def MainProject(fits_file):
 	fitsname = fits_file.split('.')[0]
 	outfile = open('Selected_Mags_'+fitsname+'.dat', "w")
 	outfile.write('Index       RA     DEC  DB_mag   DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?\n')
-	for i in range(len(log_selected)):      #Vitaly
+	for i in range(len(log_selected)):
 		outfile.write(log_selected[i]+'\n')
-	outfile.close()      #Vitaly
+	outfile.close()
 	
 	
 ############################################################################################################################################
@@ -693,10 +617,7 @@ def MainProject_dual(fits_file1, fits_file2):
 		elif obs_array2[i][2] == 1:
 			nonps_ra2.append(np.nan)
 			nonps_dec2.append(np.nan)
-		#print(i, nonps_ra1[i], nonps_dec1[i], nonps_ra2[i], nonps_dec2[i], '##', obs_array1[i][0], obs_array1[i][1],obs_array2[i][0], obs_array2[i][1])
-			
-	
-	
+
 	fig = plt.figure()
 	# Plot 1
 	ax1 = plt.subplot(1,2,1, projection=wcs1)
@@ -705,10 +626,8 @@ def MainProject_dual(fits_file1, fits_file2):
 	overlay.grid(color='white', ls='dotted')
 	ax1.set(xlabel = r'RA', ylabel = r'Dec')
 
-	#plt.scatter(ra1_all, dec1_all, 10, marker='D', facecolors='none', edgecolors='y', transform=ax1.get_transform('fk5'), label = "all")
 	plt.scatter(ra1, dec1, 100, marker='s', facecolors='none', edgecolors='r', transform=ax1.get_transform('fk5'), label = "stars")
 	plt.scatter(obs_array1[:,0],obs_array1[:,1], marker='x', facecolors='b', transform=ax1.get_transform('fk5'), picker=True)
-	#plt.scatter(obs_array2[:,0],obs_array2[:,1], marker='+', facecolors='c', transform=ax1.get_transform('fk5'))
 	plt.scatter(nonps_ra1,nonps_dec1, marker='D', facecolors='none', edgecolors='c', transform=ax1.get_transform('fk5'))
 
 	# Plot 2 
@@ -718,9 +637,7 @@ def MainProject_dual(fits_file1, fits_file2):
 	overlay.grid(color='white', ls='dotted')
 	ax2.set(xlabel = r'RA', ylabel = r'Dec')
 
-	#plt.scatter(ra2_all, dec2_all, 10, marker='D', facecolors='none', edgecolors='y', transform=ax2.get_transform('fk5'), label = "all")
 	plt.scatter(ra2, dec2, 100, marker='s', facecolors='none', edgecolors='r', transform=ax2.get_transform('fk5'), label = "stars")
-	#plt.scatter(obs_array1[:,0],obs_array1[:,1], marker='x', facecolors='b', transform=ax2.get_transform('fk5'), picker=True)
 	plt.scatter(obs_array2[:,0],obs_array2[:,1], marker='x', facecolors='b', transform=ax2.get_transform('fk5'), picker=True)
 	plt.scatter(nonps_ra2,nonps_dec2, marker='D',  facecolors='none', edgecolors='c', transform=ax2.get_transform('fk5'))
 
@@ -728,26 +645,20 @@ def MainProject_dual(fits_file1, fits_file2):
 	global log_selected
 	log_selected = []
 	fig.canvas.mpl_connect('pick_event', lambda event: onpick(event, filt1, filt2))
-	# #plt.legend()
 	print('Filter {}                                                                       Filter {}'.format(filt1, filt2))
 	print('Index   DB_mag   DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT      DB_mag   DB_err   SEx_mag   SEx_noCT   SEx_err   Ph_mag   Ph_noCT   Star?')
 	plt.show()
 	plt.close('all')	
 
 
-	#if input('do you want to output magnitudes in txt file? ') == 'y':
-	#	writefiles(obs_array1,obs_array2,filt1,filt2)
-	
 	outfile = open('Selected_Mags.dat', "w")
 	outfile.write('Index   DB_mag_{} DB_err_{} SEx_mag_{} SEx_noCT_{} SEx_err_{} Ph_mag_{} Ph_noCT_{}    DB_mag_{} DB_err_{} SEx_mag_{} SEx_noCT_{} SEx_err_{} Ph_mag_{} Ph_noCT_{} Star?\n'.format(
 		filt1,filt1,filt1,filt1,filt1,filt1,filt1,filt2,filt2,filt2,filt2,filt2,filt2,filt2))
-	for i in range(len(log_selected)):      #Vitaly
+	for i in range(len(log_selected)):
 		outfile.write(log_selected[i]+'\n')
-	outfile.close()      #Vitaly
+	outfile.close()
 	
-
-
-# Vitaly 20210330
+	
 if __name__ == "__main__":
 
 	try:

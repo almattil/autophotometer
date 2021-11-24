@@ -67,8 +67,6 @@ def cosmics(fits_file):
 	
 def coordcorr(fits_file, filt):
 	filename = fits_file.split('.')
-	#fits_head = filename[0]+'.head'
-	#fits_head = sys.argv[2]
 	fits_head = 'phase1.head'
 	
 	print('Do you want to make changes to', fits_file,'before continuing?\n[y]es, [n]o, [q]uit.')

@@ -1,5 +1,9 @@
 import subprocess
 import numpy as np
+from astropy.stats import sigma_clipped_stats
+from astropy.stats import sigma_clip
+from scipy import stats
+import plotille
 import configparser
 config = configparser.ConfigParser()
 config.read('conf_autophot.ini')
@@ -25,7 +29,6 @@ def read_file(file):
 			if line.startswith("#") == True:
 				continue
 			else:
-				#print(line)
 				line = line.rstrip('\n')
 				line_list = [s for s in line.split(' ') if s]
 				line = line.strip().split(" ")		
@@ -54,7 +57,6 @@ def get_powers(n):
     >>> get_powers(5)
     [1, 4]
     """
-    #get_bin = lambda x: x >= 0 and str(bin(x))[2:] or "-" + str(bin(x))[3:]
     n = int(n)
     get_bin = lambda x: x >= 0 and str(bin(x))[2:] or "-" + str(bin(x))[3:]
     bin_str = get_bin(n)  # convert n to a binary string
@@ -98,19 +100,11 @@ def runsex(cmd):
 def findstars(fits_file):
 	filename = fits_file.split('.')
 	name = filename[0]	
-	cat2 = "cat_{}.cat".format(name)
-	# command = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2]
+	cat2 = "phase2.cat".format(name)
 	command = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2, "-PARAMETERS_NAME", "run2.param"]
 	runsex(command)
-
+	
 	data = read_file(cat2)
-
-# Vitaly 20210330 VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-	from astropy.stats import sigma_clipped_stats
-	from astropy.stats import sigma_clip
-	from scipy import stats
-	import plotille
-
 	sg_thresh = float(config['DEFAULT']['sg_threshold'])
 	MagErrLimit = float(config['DEFAULT']['magerr_threshold'])
 
@@ -118,8 +112,8 @@ def findstars(fits_file):
 	sg1   = e_sg(data)
 	magerr1 = e_magerr(data)
 	flags1 = e_flags(data)
-
 	FWHMtemp = []
+	
 	for i in range(len(fwhm1)):
 		if ((magerr1[i] <= 2*MagErrLimit) and (sg1[i] > sg_thresh)) and not(4 in get_powers(flags1[i])):
 			FWHMtemp.append(fwhm1[i]*3600)
@@ -158,7 +152,6 @@ def findstars(fits_file):
 	HistBins=int((max(filtered_data)-min(filtered_data))/0.05)
 	print(plotille.hist(filtered_data,bins=HistBins))
 
-# scipy.stats.tmean  https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.tmean.html#scipy.stats.tmean
 	Mean3, Median3, StdDev3 = sigma_clipped_stats(FWHMtemp, sigma=3, maxiters=None)
 	print("\n3 sigma Clipped Mean=", Mean3, "=/-", StdDev3)
 	print("Number of star-candidates:        ", len(FWHMtemp))
@@ -174,7 +167,6 @@ def findstars(fits_file):
 	filtered_data = sigma_clip(FWHMtemp, sigma=3, maxiters=None, masked=False, copy=False, cenfunc='median')
 
 	global xx_all, yy_all, mag_all, fwhm_all
-#	global ra_all, dec_all, ra_sat, dec_sat, ra_nonstar, dec_nonstar, ra_err, dec_err, ra_susp, dec_susp
 	global ra_sat, dec_sat, ra_nonstar, dec_nonstar, ra_err, dec_err, ra_susp, dec_susp
 
 	n_sat   = 0      # Number of saturated objects

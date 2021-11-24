@@ -69,8 +69,6 @@ def ps1search(table="mean",release="dr1",format="csv",columns=None,
 				badcols.append(col)
 		if badcols:
 			raise ValueError('Some columns not found in table: {}'.format(', '.join(badcols)))
-		# two different ways to specify a list of column values in the API
-		# data['columns'] = columns
 		data['columns'] = '[{}]'.format(','.join(columns))
 
 	r = requests.get(url, params=data)
@@ -122,26 +120,6 @@ def twomass_query(ra, dec, radius, verbose = True, **kw):
 	r.raise_for_status()
 	
 	tab = ascii.read(r.text)
-	# print(tab)
-	
-	# table = r.text
-	# table = table.rstrip('\n')
-	# table = table.split('\n')
-	# data = []
-	# for line in table:
-		# line = line.rstrip('\n')
-		# line_list = [s for s in line.split(' ') if s]
-		# line = line.strip().split(" ")
-		# filtered = list(filter(None, line))
-		# if line[0].startswith('\'') or line[0].startswith('\\'):
-			# continue
-		# elif line[0] ==('|'):
-			# continue
-		# else:
-			# data.append(filtered)
-			# #print(filtered)			
-	# return(data)
-
 	return(tab)
 
 
@@ -152,7 +130,6 @@ def read_file(file):
 			if line.startswith("#") == True:
 				continue
 			else:
-				#print(line)
 				line = line.rstrip('\n')
 				line_list = [s for s in line.split(' ') if s]
 				line = line.strip().split(" ")		
@@ -258,12 +235,10 @@ def database_extraction(own_a,own_d,own_mag,filt):
 		ps_a = e_a(tab)
 		ps_d = e_d(tab)
 		B, V, R, I = gri2bvri(np.array(e_g(tab)), np.array(e_r(tab)), np.array(e_i(tab)))
-		#B_err, V_err, R_err, I_err = gri2bvri(np.array(e_g_err(tab)), np.array(e_r_err(tab)), np.array(e_i_err(tab)))
 		B_err = findlargest(np.array(e_g_err(tab)), np.array(e_r_err(tab)))
 		V_err = findlargest(np.array(e_g_err(tab)), np.array(e_r_err(tab)))
 		R_err = findlargest(np.array(e_r_err(tab)), np.array(e_i_err(tab)))
 		I_err = findlargest(np.array(e_r_err(tab)), np.array(e_i_err(tab)))
-	#print(tab)
 	print('Data extracted!')
 
 	if filt == "G_PS":
@@ -355,5 +330,4 @@ def database_extraction(own_a,own_d,own_mag,filt):
 	obs_array = np.insert(obs_array, 4, ps_mags, axis=1)
 	obs_array = np.insert(obs_array, 5, ps_magerr, axis=1)
 
-	#return(ps_a, ps_d, match_a, match_d, own_a, own_d, match_mag, delta_mag, ps_cat, obs_array)
 	return(ps_a, ps_d, obs_array, db_mags_full)
