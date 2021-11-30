@@ -210,7 +210,7 @@ def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3)
 	if filt in 'JHK':
 		J = ps_bvri[:,0]
 		H = ps_bvri[:,1]
-		K = ps_bvri[:,2] #these need to be defined properly, and GRIZY too.
+		K = ps_bvri[:,2]
 		color = {
 			'J'		:	J-H,
 			'H'		:	J-H,
@@ -487,7 +487,7 @@ def MainProject(fits_file):
 
 	for i in range(len(obs_array1)):
 		#Vitaly: if not present in the db catalog, and it's not a star, add coords.
-		if obs_array1[i][2] == 0 and det_types1=='Likely    ':
+		if obs_array1[i][2] == 0 and det_types1[i]=='Likely    ':
 			nonps_ra.append(obs_array1[i][0])
 			nonps_dec.append(obs_array1[i][1])
 			

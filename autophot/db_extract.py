@@ -195,7 +195,6 @@ def catalog_matching(cat1, cat2):
 		sep_const_miss = d2d > max_sep
 		common_detections = cat1[sep_constraint]
 		catalog_matches = cat2[idx[sep_constraint]]
-		catalog_missing = cat2[idx[sep_const_miss]]
 		return(common_detections, catalog_matches, idx)
 
 def findlargest(ar1, ar2):
@@ -291,6 +290,7 @@ def database_extraction(own_a,own_d,own_mag,filt):
 			presence.append(1)
 		else:
 			presence.append(0)
+			
 	obs_array = np.insert(obs_array, 2, presence, axis=1)
 
 	if filt in filterlist1:
@@ -307,8 +307,13 @@ def database_extraction(own_a,own_d,own_mag,filt):
 	ps_magerr = []
 	for i in range(len(idx)):
 		obs_mags.append(own_mag[i])
-		ps_mags.append(mags[idx[i]])
-		ps_magerr.append(magerr[idx[i]])
+		if presence[i] == 1:
+			ps_mags.append(mags[idx[i]])
+			ps_magerr.append(magerr[idx[i]])
+		elif presence[i] == 0:
+			ps_mags.append(np.nan)
+			ps_magerr.append(np.nan)
+			
 		if filt in filterlist2:
 			f1_sort.append(B[idx[i]])
 			f2_sort.append(V[idx[i]])
