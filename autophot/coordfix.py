@@ -8,10 +8,13 @@ import os # Vitaly 20211108
 def runscamp2mass():
 #Vitaly 20211108
 	ph1cat_file='phase1.cat'
+	scampconf_file='scamp.conf'
 	if not os.path.exists(ph1cat_file):
 		ph1cat_file=os.path.expanduser('~/.autophot/phase1.cat')
+	if not os.path.exists(scampconf_file):
+		scampconf_file=os.path.expanduser('~/.autophot/scamp.conf')
 #Vitaly 20211108
-	subprocess.call(['scamp', ph1cat_file, '-ASTREF_CATALOG', '2MASS'])
+	subprocess.call(['scamp', "-c", scampconf_file, ph1cat_file, '-ASTREF_CATALOG', '2MASS'])
 
 
 def runscamp():
