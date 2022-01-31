@@ -300,7 +300,7 @@ def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3)
 
 def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_bvri, output_data=False):
 	# removing escapers and calculating standard deviation 
-	magerr_threshold = float(config['DEFAULT']['sg_threshold'])
+	magerr_threshold = float(config['DEFAULT']['magerr_threshold'])
 	ownmags = obs_array[:,3]
 	psmags = obs_array[:,4]
 	mag1 = [] # own data
