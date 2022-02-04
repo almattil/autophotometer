@@ -88,7 +88,7 @@ def cosmics(fits_file):
 		try:
 			gain = header['GAIN1'] #some images seem to have multiple gain keywords.
 		except:
-			gain = 1
+			gain = 1 #if no gain found, set it to 1 and hope for the best.
 	hdu[0].data = ccdproc.cosmicray_lacosmic(image, gain = gain)[0]
 	hdu.close()
 	
@@ -131,11 +131,3 @@ def coordcorr(fits_file, filt):
 		
 		else:
 			print('Unknown input.')
-		
-	
-
-			
-if __name__=='__main__':
-	fits_file = 'EG_Cnc_V.fits'
-	coordcorr(fits_file)
-	
