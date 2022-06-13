@@ -3,7 +3,7 @@ import os
 
 setup(
     name='autophotometer',
-    version='0.2.0a1',
+    version='0.2.0a2',
     url='https://github.com/almattil/autophotometer.git',
     author='Aleksi Mattila, Vitaly Neustroev',
     author_email='author@gmail.com',

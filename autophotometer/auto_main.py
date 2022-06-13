@@ -137,7 +137,8 @@ def determine_filter(hdr):
 	else:
 		print(hdr['INSTRUME'], 'instrument not found')
 	
-	filt_0 = filt_in.split(' ')[0]	#splitting filter name because the number of spaces in header value inconsistent. Also, many different *'_SDSS filters, and I'm, not sure which ones are needed.
+	filt_0 = filt_in.split(' ')[0]
+	#splitting filter name because the number of spaces in header value inconsistent. Also, many different *'_SDSS filters, and I'm, not sure which ones are needed.
 	filters = {					
 		'g\'_SDSS'	:	'G_PS',
 		'r\'_SDSS'	:	'R_PS',
@@ -159,7 +160,7 @@ def determine_filter(hdr):
 	filt_out = filters[filt_0]	
 	return(filt_out)	
 	
-def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3):  #Vitaly
+def colorterm_airmass(filt, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3):  #Vitaly
 	'''
 	Filters:
 		PS1			G R I Z Y (_PS)
@@ -195,7 +196,10 @@ def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3)
 		'H'		:	0,
 		'K'		:	0,
 		}
-	filt = determine_filter(hdr)
+	# try:
+		# filt = determine_filter(hdr)
+	# except:
+		# filt = 
 	if filt in 'BVRI':
 		B = ps_bvri[:,0]
 		V = ps_bvri[:,1]
@@ -298,7 +302,7 @@ def colorterm_airmass(hdr, airmass, ps_bvri, own_mags, dmag_mean3, dmag_StdDev3)
 	# print('Color', X, Y)  # Vitaly
 	return(output)
 
-def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_bvri, output_data=False):
+def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_bvri, filt, output_data=False):
 	# removing escapers and calculating standard deviation 
 	magerr_threshold = float(config['DEFAULT']['magerr_threshold'])
 	ownmags = obs_array[:,3]
@@ -391,7 +395,7 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 	
 	ph_dmag_mean3, ph_dmag_median3, ph_dmag_sd3 = sigma_clipped_stats(ph_dmag_temp, sigma=5, maxiters=None)
 	airmass = float(header['AIRMASS'])	
-	color_corr = colorterm_airmass(header, airmass, ps_bvri, ownmags, dmag_mean3, dmag_StdDev3)
+	color_corr = colorterm_airmass(filt, airmass, ps_bvri, ownmags, dmag_mean3, dmag_StdDev3)
 
 	ph_truemags = np.array(ph_mags) - color_corr
 	truemags = ownmags - color_corr
@@ -468,7 +472,7 @@ def MainProject(fits_file):
 	print('\nBeginning database extraction...')
 	ps_a, ps_d, obs_array1, ps_bvri = db_extract.database_extraction(ra_all, dec_all, mag_all, filt)
 	
-	obs_array1,image,wcs = photometry_calculations(obs_array1, fits_file, xx, yy, fwhm_pix, magerr, ps_bvri, output_data = True)
+	obs_array1,image,wcs = photometry_calculations(obs_array1, fits_file, xx, yy, fwhm_pix, magerr, ps_bvri, filt, output_data = True)
 	
 	stretch = LinearStretch(slope=0.5, intercept=0.5)
 	norm = ImageNormalize(image, stretch=LinearStretch(), interval=ZScaleInterval())
