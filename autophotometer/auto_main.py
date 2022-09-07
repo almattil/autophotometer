@@ -43,6 +43,9 @@ config.read(['conf_autophot.ini', os.path.expanduser('~/.autophotometer/conf_aut
 #config.read('conf_autophot.ini')  #old
 
 sigma_mult = float(config['DEFAULT']['sigma_mult'])
+aperture_rad = float(config['DEFAULT']['aperture_rad'])
+annulus_min = float(config['DEFAULT']['annulus_min'])
+annulus_max = float(config['DEFAULT']['annulus_max'])
 
 def onpick(event, filt1, filt2):
 	ind = event.ind[0]
@@ -346,9 +349,9 @@ def photometry_calculations(obs_array, fits_file, xx, yy, fwhm_pix, magerr, ps_b
 		pos = [xx[i],yy[i]]
 		ap_pos.append(pos)
 
-	r_ap = np.mean(fwhm_pix)*1.4
-	r_an_min = np.mean(fwhm_pix) * 3
-	r_an_max = np.mean(fwhm_pix) * 5
+	r_ap = np.mean(fwhm_pix) * aperture_rad
+	r_an_min = np.mean(fwhm_pix) * annulus_min
+	r_an_max = np.mean(fwhm_pix) * annulus_max
 	
 	apertures = photutils.CircularAperture(ap_pos, r = r_ap)
 	annulus = photutils.CircularAnnulus(ap_pos, r_in = r_an_min, r_out = r_an_max)
