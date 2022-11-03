@@ -3,13 +3,21 @@ import os
 
 setup(
     name='autophotometer',
-    version='0.2.0a2',
+    version='0.2.0a3',
     url='https://github.com/almattil/autophotometer.git',
     author='Aleksi Mattila, Vitaly Neustroev',
     author_email='author@gmail.com',
     description='Description of my package',
     python_requires='>=3.7',
-    install_requires=['numpy >= 1.20.2', 'matplotlib >= 3.4.1'],
+    install_requires=[
+        'numpy >= 1.20.2', 
+        'astropy >= 4.3.1',
+        'ccdproc >= 2.2.0',
+        'photutils >= 1.2.0',
+        'plotille >= 3.8.0',
+        'requests >= 2.25.1',
+        'scipy >= 1.7.2',
+        'matplotlib >= 3.4.1'],
     packages=['autophotometer'],
 #    package_dir={'autophoto': 'src/mypkg'},
 #    package_data={'mypkg': ['data/*.dat']},
