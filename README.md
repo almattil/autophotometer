@@ -16,7 +16,6 @@ Additionally it uses the following python packages:
   - Numpy
   - Matplotlib
   - Scipy
-  - Configparser
   - photutils
   - CCDProc
   - Plotille
