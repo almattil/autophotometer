@@ -7,7 +7,7 @@ from sys import stdin
 from pkg_resources import get_distribution
 
 try:
-    import autophot.auto_main as auto_main
+    import autophotometer.auto_main as auto_main
     isModuleInstalled=1
 except ModuleNotFoundError:
     isModuleInstalled=0
@@ -19,7 +19,7 @@ def printHeader(version):
     """ Print the Header """
     print("\n")
     print("*******************************************************************************")
-    print("                         autophot: ver.",version)
+    print("                         autophotometer: ver.",version)
     print(" ")
 
 def printUsage():
@@ -37,7 +37,7 @@ def printUsage():
 
 def cli_main():
 	if isModuleInstalled:
-		version = get_distribution('autophot').version
+		version = get_distribution('autophotometer').version
 	else:
 		version = LocalVersion+' local\n'
 	printHeader(version)

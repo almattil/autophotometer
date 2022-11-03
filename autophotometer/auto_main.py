@@ -4,9 +4,9 @@ import sys
 import os # new
 import warnings
 try:
-    import autophot.coordfix as coordfix
-    import autophot.starseparator as ss
-    import autophot.db_extract as db_extract
+    import autophotometer.coordfix as coordfix
+    import autophotometer.starseparator as ss
+    import autophotometer.db_extract as db_extract
     isModuleInstalled=1
 except ModuleNotFoundError:
     isModuleInstalled=0
@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 
 if not isModuleInstalled:
 	sys.stderr.write("\n*******************************************************************************\n\n")
-	sys.stderr.write(" The AutoPhot package is not installed!     However, it can be used by running \n")
+	sys.stderr.write(" The AutoPhotometer package is not installed!     However, it can be used by running \n")
 	sys.stderr.write(" 'python autophot.py' from the folder where all the package files are located.\n")
 
 import matplotlib.pyplot as plt

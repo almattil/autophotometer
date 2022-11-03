@@ -110,11 +110,11 @@ def findstars(fits_file):
 	run2_file="run2.param"
 	STARNNW_file="default.nnw"		
 	if not os.path.exists(ph2conf_file):
-		ph2conf_file=os.path.expanduser('~/.autophot/ph2conf.sex')
+		ph2conf_file=os.path.expanduser('~/.autophotometer/ph2conf.sex')
 	if not os.path.exists(run2_file):
-		run2_file=os.path.expanduser('~/.autophot/run2.param')
+		run2_file=os.path.expanduser('~/.autophotometer/run2.param')
 	if not os.path.exists(STARNNW_file):
-		STARNNW_file=os.path.expanduser('~/.autophot/default.nnw')
+		STARNNW_file=os.path.expanduser('~/.autophotometer/default.nnw')
 # Vitaly 20211108
 	
 	# command = ["sex", fits_file, "-c", "ph2conf.sex", "-CATALOG_NAME", cat2]
