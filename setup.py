@@ -6,7 +6,7 @@ setup(
     version='0.2.0a3',
     url='https://github.com/almattil/autophotometer.git',
     author='Aleksi Mattila, Vitaly Neustroev',
-    author_email='author@gmail.com',
+    author_email='aleksi.a.mattila@gmail.com',
     description='Description of my package',
     python_requires='>=3.7',
     install_requires=[
