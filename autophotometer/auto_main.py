@@ -28,15 +28,12 @@ from astropy.coordinates import SkyCoord
 from astropy.coordinates import match_coordinates_sky
 from astropy import units as u
 from astropy.stats import sigma_clipped_stats
-from matplotlib.colors import LogNorm
-from astropy.visualization import (ZScaleInterval, ImageNormalize)
+from astropy.visualization import ZScaleInterval, ImageNormalize
 from astropy.visualization.stretch import LinearStretch
 import numpy as np
 import photutils
-from photutils.utils import calc_total_error
 from astropy.stats import sigma_clip
 import configparser
-import ccdproc
 config = configparser.ConfigParser()
 
 config.read(['conf_autophot.ini', os.path.expanduser('~/.autophotometer/conf_autophot.ini')],)
@@ -51,25 +48,68 @@ def onpick(event, filt1, filt2):
 	ind = event.ind[0]
 	try:
 		print('{:>5} {:11.6f} {:11.6f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}     {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
-			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11],
-			obs_array2[ind][4], abs(obs_array2[ind][5]), obs_array2[ind][6], obs_array2[ind][10], 
-			abs(obs_array2[ind][8]), obs_array2[ind][7],obs_array2[ind][11], det_types1[ind])
+			ind, 
+			obs_array1[ind][4], 
+			abs(obs_array1[ind][5]), 
+			obs_array1[ind][6], 
+			obs_array1[ind][10], 
+			abs(obs_array1[ind][8]), 
+			obs_array1[ind][7],
+			obs_array1[ind][11],
+			obs_array2[ind][4], 
+			abs(obs_array2[ind][5]), 
+			obs_array2[ind][6], 
+			obs_array2[ind][10], 
+			abs(obs_array2[ind][8]), 
+			obs_array2[ind][7],
+			obs_array2[ind][11], 
+			det_types1[ind])
 			)
 		log_selected.append('{:>5} {:11.6f} {:11.6f}{:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}     {:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
-			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11],
-			obs_array2[ind][4], abs(obs_array2[ind][5]), obs_array2[ind][6], obs_array2[ind][10], 
-			abs(obs_array2[ind][8]), obs_array2[ind][7],obs_array2[ind][11], det_types1[ind])
+			ind, 
+			obs_array1[ind][0],
+			obs_array1[ind][1],
+			obs_array1[ind][4], 
+			abs(obs_array1[ind][5]), 
+			obs_array1[ind][6], 
+			obs_array1[ind][10], 
+			abs(obs_array1[ind][8]),
+			obs_array1[ind][7],
+			obs_array1[ind][11],
+			obs_array2[ind][4], 
+			abs(obs_array2[ind][5]), 
+			obs_array2[ind][6], 
+			obs_array2[ind][10], 
+			abs(obs_array2[ind][8]), 
+			obs_array2[ind][7],
+			obs_array2[ind][11], 
+			det_types1[ind])
 			)
 	except:
 		print('{:>5} {:11.6f} {:11.6f} {:8.3f} {:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
-			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11], det_types1[ind])
+			ind, 
+			obs_array1[ind][0],
+			obs_array1[ind][1],
+			obs_array1[ind][4], 
+			abs(obs_array1[ind][5]), 
+			obs_array1[ind][6], 
+			obs_array1[ind][10], 
+			abs(obs_array1[ind][8]), 
+			obs_array1[ind][7],
+			obs_array1[ind][11], 
+			det_types1[ind])
 			)
 		log_selected.append('{:>5} {:11.6f} {:11.6f}{:8.3f}{:8.3f}  {:8.3f}  {:8.3f}  {:8.3f}   {:8.3f} {:8.3f}    {}'.format(
-			ind, obs_array1[ind][0],obs_array1[ind][1],obs_array1[ind][4], abs(obs_array1[ind][5]), obs_array1[ind][6], obs_array1[ind][10], 
-			abs(obs_array1[ind][8]), obs_array1[ind][7],obs_array1[ind][11], det_types1[ind])
+			ind, obs_array1[ind][0],
+			obs_array1[ind][1],
+			obs_array1[ind][4], 
+			abs(obs_array1[ind][5]),
+			obs_array1[ind][6],
+			obs_array1[ind][10], 
+			abs(obs_array1[ind][8]),
+			obs_array1[ind][7],
+			obs_array1[ind][11],
+			det_types1[ind])
 			)
 	
 def writefiles(obs_array1,obs_array2,filt1,filt2):

@@ -2,13 +2,7 @@
 from astropy.io import ascii
 from astropy.table import Table
 import numpy as np
-import json
 import requests
-from scipy import spatial
-from urllib.parse import quote as urlencode
-from urllib.request import urlretrieve
-import http.client as httplib 
-import matplotlib.pyplot as plt
 from astropy.coordinates import match_coordinates_sky
 from astropy.coordinates import SkyCoord
 from astropy import units as u

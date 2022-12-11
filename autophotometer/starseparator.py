@@ -3,7 +3,6 @@ import subprocess
 import numpy as np
 from astropy.stats import sigma_clipped_stats
 from astropy.stats import sigma_clip
-from scipy import stats
 import plotille
 import configparser
 import os # new
@@ -101,8 +100,6 @@ def runsex(cmd):
 	subprocess.call(cmd)
 
 def findstars(fits_file):
-	filename = fits_file.split('.')
-	name = filename[0]	
 	cat2 = "phase2.cat"
 	
 # Vitaly 20211108

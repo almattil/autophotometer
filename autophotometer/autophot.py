@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-LocalVersion='20211128'
+LocalVersion='20221211'
 
 import os
 import sys
